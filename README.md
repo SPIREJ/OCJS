@@ -8,4 +8,4 @@
 
 - 3. WKWebView
 
-- 4. WKWebViewJavascriptBridge
+- 4. WebViewJavascriptBridge
