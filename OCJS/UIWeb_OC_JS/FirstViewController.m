@@ -16,10 +16,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self navBarBtns];
     [self.view addSubview:self.webView];
     
-//    NSURL *url = [NSURL fileURLWithPath:@"index.html"];
-//    NSURL *url = [NSURL URLWithString:@"https://www.baidu.com"];
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"index.html" withExtension:nil];
     
     [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
@@ -33,22 +32,47 @@
     return _webView;
 }
 
-#pragma mark - private 响应方法
+- (void)navBarBtns {
+    UIButton *barBtn1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
+    [barBtn1 setTitle:@"OC调JS" forState:UIControlStateNormal];
+    [barBtn1 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [barBtn1 addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barItem1 = [[UIBarButtonItem alloc] initWithCustomView:barBtn1];
+    
+    self.navigationItem.rightBarButtonItems = @[barItem1];
+}
 
-- (void)getSum:(NSString *)str{
-    NSLog(@"str = %@", str);
+- (void)login {
+    NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:@"showAlert('HELLO')()"];
+    NSLog(@"result == %@",result);
+}
+
+#pragma mark - private
+
+- (void)getSum {
+    //...
 }
 
 #pragma mark - UIWebViewDelegate
 
+/**
+这些都是JS响应的样式
+UIWebViewNavigationTypeLinkClicked,        点击
+UIWebViewNavigationTypeFormSubmitted,      提交
+UIWebViewNavigationTypeBackForward,        返回
+UIWebViewNavigationTypeReload,             刷新
+UIWebViewNavigationTypeFormResubmitted,    重复提交
+UIWebViewNavigationTypeOther               其他
+*/
 // 加载所有请求数据,以及控制是否加载
 // JS 调用 OC --> shouldStartLoadWithRequest
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    NSLog(@"request = %@", request);
-    NSLog(@"URL = %@", request.URL);
-    NSLog(@"pathComponents = %@", request.URL.pathComponents);
-    NSLog(@"scheme = %@", request.URL.scheme);
     
+    NSLog(@"scheme = %@", request.URL.scheme); // 标示 我们自己的协议
+    NSLog(@"host = %@", request.URL.host); // 方法名
+    NSLog(@"pathComponents = %@", request.URL.pathComponents); // 参数
+    
+    // JS 调用OC 的原理就是 拦截URL
     NSString *scheme = request.URL.scheme;
     if ([scheme isEqualToString:@"lgedu"]) {
         NSArray *array = request.URL.pathComponents;
@@ -56,6 +80,7 @@
             NSString *methodName = array[1];
             if ([methodName isEqualToString:@"getSum"]) {
                 [self performSelector:NSSelectorFromString(methodName) withObject:array afterDelay:0];
+                //...
             }
         }
     }

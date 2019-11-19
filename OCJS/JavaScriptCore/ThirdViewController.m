@@ -118,6 +118,8 @@
     [self removeSpaceAndNewline:encodedImageStr];
     [self dismissViewControllerAnimated:YES completion:nil];
     NSString *imageString = [self removeSpaceAndNewline:encodedImageStr];
+    
+    // 拿到图片后，调用JS方法，把图片传给JS显示
     NSString *jsFunctStr = [NSString stringWithFormat:@"showImage('%@')",imageString];
     [self.jsContext evaluateScript:jsFunctStr];
 }
@@ -130,13 +132,5 @@
     return temp;
 }
 
-
-//- (void)openAlbum{
-//    self.imagePicker = [[UIImagePickerController alloc] init];
-//    self.imagePicker.delegate = self;
-//    self.imagePicker.allowsEditing = YES;
-//    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//    [self presentViewController:self.imagePicker animated:YES completion:nil];
-//}
 
 @end

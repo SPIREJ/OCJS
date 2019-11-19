@@ -38,7 +38,7 @@
     // 如果你要在VC中实现 UIWebView的代理方法 就实现下面的代码(否则省略)
     // [self.bridge setWebViewDelegate:self];
     
-    //注册handle js调用oc
+    //注册handle js调用oc 提供给JS调用的
     [self.bridge registerHandler:@"jsCallsOC" handler:^(id data, WVJBResponseCallback responseCallback) {
         
         NSLog(@"currentThread == %@",[NSThread currentThread]);
